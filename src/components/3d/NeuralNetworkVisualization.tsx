@@ -21,8 +21,6 @@ const NetworkNode = ({ position, color = "#8b5cf6", scale = 1 }: {
     }
   });
 
-  console.log("NetworkNode component rendering with:", { position, color, scale });
-  
   return (
     <mesh ref={meshRef} position={position}>
       <sphereGeometry args={[0.15 * scale, 16, 16]} />
@@ -37,31 +35,36 @@ const NetworkNode = ({ position, color = "#8b5cf6", scale = 1 }: {
   );
 };
 
-// Connection line component
+// Connection line component - using cylinder geometry instead of line
 const Connection = ({ start, end, color = "#06b6d4" }: {
   start: [number, number, number];
   end: [number, number, number];
   color?: string;
 }) => {
-  const points = useMemo(() => [
-    new THREE.Vector3(...start),
-    new THREE.Vector3(...end)
-  ], [start, end]);
-
-  console.log("Connection component rendering with:", { start, end, color });
+  const midPoint = useMemo(() => [
+    (start[0] + end[0]) / 2,
+    (start[1] + end[1]) / 2,
+    (start[2] + end[2]) / 2
+  ] as [number, number, number], [start, end]);
   
+  const distance = useMemo(() => {
+    const dx = end[0] - start[0];
+    const dy = end[1] - start[1];
+    const dz = end[2] - start[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  }, [start, end]);
+  
+  const rotation = useMemo(() => {
+    const dx = end[0] - start[0];
+    const dy = end[1] - start[1];
+    return [0, 0, Math.atan2(dy, dx)] as [number, number, number];
+  }, [start, end]);
+
   return (
-    <line>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          array={new Float32Array([...start, ...end])}
-          count={2}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <lineBasicMaterial color={color} transparent opacity={0.6} />
-    </line>
+    <mesh position={midPoint} rotation={rotation}>
+      <cylinderGeometry args={[0.01, 0.01, distance, 6]} />
+      <meshBasicMaterial color={color} transparent opacity={0.6} />
+    </mesh>
   );
 };
 
@@ -106,27 +109,26 @@ const NetworkStructure = () => {
         <NetworkNode key={`output-${i}`} position={pos} color="#ec4899" scale={1.3} />
       ))}
       
-      {/* Temporarily commenting out connections to isolate the issue */}
       {/* Connections from input to hidden1 */}
-      {/* {inputLayer.map((start, i) =>
+      {inputLayer.map((start, i) =>
         hiddenLayer1.map((end, j) => (
           <Connection key={`input-hidden1-${i}-${j}`} start={start} end={end} color="#06b6d4" />
         ))
-      )} */}
+      )}
       
       {/* Connections from hidden1 to hidden2 */}
-      {/* {hiddenLayer1.map((start, i) =>
+      {hiddenLayer1.map((start, i) =>
         hiddenLayer2.map((end, j) => (
           <Connection key={`hidden1-hidden2-${i}-${j}`} start={start} end={end} color="#8b5cf6" />
         ))
-      )} */}
+      )}
       
       {/* Connections from hidden2 to output */}
-      {/* {hiddenLayer2.map((start, i) =>
+      {hiddenLayer2.map((start, i) =>
         outputLayer.map((end, j) => (
           <Connection key={`hidden2-output-${i}-${j}`} start={start} end={end} color="#ec4899" />
         ))
-      )} */}
+      )}
     </>
   );
 };

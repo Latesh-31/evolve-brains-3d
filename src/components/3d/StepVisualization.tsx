@@ -129,29 +129,15 @@ const CrossoverVisualization = () => {
         <meshStandardMaterial color="#10b981" emissive="#10b981" emissiveIntensity={0.2} />
       </mesh>
       
-      {/* Connection lines */}
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array([...parent1Pos, ...child1Pos])}
-            count={2}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
-      </line>
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array([...parent2Pos, ...child2Pos])}
-            count={2}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#06b6d4" transparent opacity={0.6} />
-      </line>
+      {/* Connection lines - using cylinder geometry */}
+      <mesh position={[-0.75, 0.25, 0]} rotation={[0, 0, Math.atan2(0.5, 1.5)]}>
+        <cylinderGeometry args={[0.01, 0.01, Math.sqrt(2.5), 8]} />
+        <meshBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
+      </mesh>
+      <mesh position={[-0.75, -0.25, 0]} rotation={[0, 0, Math.atan2(-0.5, 1.5)]}>
+        <cylinderGeometry args={[0.01, 0.01, Math.sqrt(2.5), 8]} />
+        <meshBasicMaterial color="#06b6d4" transparent opacity={0.6} />
+      </mesh>
       
       <Text
         position={[0, -1.2, 0]}
@@ -188,51 +174,23 @@ const NetworkVisualization = () => {
         <meshStandardMaterial color="#ec4899" emissive="#ec4899" emissiveIntensity={0.2} />
       </mesh>
       
-      {/* Connections */}
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array([-1, 0, 0, 0, 0.5, 0])}
-            count={2}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#06b6d4" transparent opacity={0.6} />
-      </line>
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array([-1, 0, 0, 0, -0.5, 0])}
-            count={2}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#06b6d4" transparent opacity={0.6} />
-      </line>
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array([0, 0.5, 0, 1, 0, 0])}
-            count={2}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
-      </line>
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array([0, -0.5, 0, 1, 0, 0])}
-            count={2}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
-      </line>
+      {/* Connections - using simple cylinder geometry instead of lines */}
+      <mesh position={[-0.5, 0.25, 0]} rotation={[0, 0, Math.atan2(0.5, 1)]}>
+        <cylinderGeometry args={[0.005, 0.005, Math.sqrt(1.25), 8]} />
+        <meshBasicMaterial color="#06b6d4" transparent opacity={0.6} />
+      </mesh>
+      <mesh position={[-0.5, -0.25, 0]} rotation={[0, 0, Math.atan2(-0.5, 1)]}>
+        <cylinderGeometry args={[0.005, 0.005, Math.sqrt(1.25), 8]} />
+        <meshBasicMaterial color="#06b6d4" transparent opacity={0.6} />
+      </mesh>
+      <mesh position={[0.5, 0.25, 0]} rotation={[0, 0, Math.atan2(-0.5, 1)]}>
+        <cylinderGeometry args={[0.005, 0.005, Math.sqrt(1.25), 8]} />
+        <meshBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
+      </mesh>
+      <mesh position={[0.5, -0.25, 0]} rotation={[0, 0, Math.atan2(0.5, 1)]}>
+        <cylinderGeometry args={[0.005, 0.005, Math.sqrt(1.25), 8]} />
+        <meshBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
+      </mesh>
     </group>
   );
 };
