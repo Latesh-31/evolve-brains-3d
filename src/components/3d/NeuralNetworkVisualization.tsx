@@ -21,6 +21,8 @@ const NetworkNode = ({ position, color = "#8b5cf6", scale = 1 }: {
     }
   });
 
+  console.log("NetworkNode component rendering with:", { position, color, scale });
+  
   return (
     <mesh ref={meshRef} position={position}>
       <sphereGeometry args={[0.15 * scale, 16, 16]} />
@@ -46,6 +48,8 @@ const Connection = ({ start, end, color = "#06b6d4" }: {
     new THREE.Vector3(...end)
   ], [start, end]);
 
+  console.log("Connection component rendering with:", { start, end, color });
+  
   return (
     <line>
       <bufferGeometry>
@@ -102,26 +106,27 @@ const NetworkStructure = () => {
         <NetworkNode key={`output-${i}`} position={pos} color="#ec4899" scale={1.3} />
       ))}
       
+      {/* Temporarily commenting out connections to isolate the issue */}
       {/* Connections from input to hidden1 */}
-      {inputLayer.map((start, i) =>
+      {/* {inputLayer.map((start, i) =>
         hiddenLayer1.map((end, j) => (
           <Connection key={`input-hidden1-${i}-${j}`} start={start} end={end} color="#06b6d4" />
         ))
-      )}
+      )} */}
       
       {/* Connections from hidden1 to hidden2 */}
-      {hiddenLayer1.map((start, i) =>
+      {/* {hiddenLayer1.map((start, i) =>
         hiddenLayer2.map((end, j) => (
           <Connection key={`hidden1-hidden2-${i}-${j}`} start={start} end={end} color="#8b5cf6" />
         ))
-      )}
+      )} */}
       
       {/* Connections from hidden2 to output */}
-      {hiddenLayer2.map((start, i) =>
+      {/* {hiddenLayer2.map((start, i) =>
         outputLayer.map((end, j) => (
           <Connection key={`hidden2-output-${i}-${j}`} start={start} end={end} color="#ec4899" />
         ))
-      )}
+      )} */}
     </>
   );
 };
