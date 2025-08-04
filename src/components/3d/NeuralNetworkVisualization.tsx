@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Sphere, Line } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
@@ -14,13 +14,16 @@ const NetworkNode = ({ position, color = "#8b5cf6", scale = 1 }: {
   
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime + position[0]) * 0.1;
-      meshRef.current.scale.setScalar(scale + Math.sin(state.clock.elapsedTime * 2 + position[0]) * 0.1);
+      const time = state.clock.elapsedTime;
+      meshRef.current.rotation.y = Math.sin(time + position[0]) * 0.1;
+      const currentScale = scale + Math.sin(time * 2 + position[0]) * 0.1;
+      meshRef.current.scale.set(currentScale, currentScale, currentScale);
     }
   });
 
   return (
-    <Sphere ref={meshRef} position={position} args={[0.15 * scale, 16, 16]}>
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[0.15 * scale, 16, 16]} />
       <meshStandardMaterial 
         color={color} 
         emissive={color}
@@ -28,7 +31,7 @@ const NetworkNode = ({ position, color = "#8b5cf6", scale = 1 }: {
         transparent
         opacity={0.8}
       />
-    </Sphere>
+    </mesh>
   );
 };
 
@@ -44,13 +47,17 @@ const Connection = ({ start, end, color = "#06b6d4" }: {
   ], [start, end]);
 
   return (
-    <Line
-      points={points}
-      color={color}
-      lineWidth={2}
-      transparent
-      opacity={0.6}
-    />
+    <line>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          array={new Float32Array([...start, ...end])}
+          count={2}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <lineBasicMaterial color={color} transparent opacity={0.6} />
+    </line>
   );
 };
 

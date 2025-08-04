@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text, Sphere, Line } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
@@ -35,13 +35,14 @@ const PopulationVisualization = () => {
   return (
     <group ref={groupRef}>
       {positions.map((pos, i) => (
-        <Sphere key={i} position={pos} args={[0.15, 8, 8]}>
+        <mesh key={i} position={pos}>
+          <sphereGeometry args={[0.15, 8, 8]} />
           <meshStandardMaterial 
             color={`hsl(${240 + i * 10}, 70%, 60%)`}
             emissive={`hsl(${240 + i * 10}, 70%, 30%)`}
             emissiveIntensity={0.3}
           />
-        </Sphere>
+        </mesh>
       ))}
       <Text
         position={[0, 0, -3]}
@@ -68,13 +69,14 @@ const FitnessVisualization = () => {
     <group>
       {positions.map((pos, i) => (
         <group key={i}>
-          <Sphere position={[pos[0], 0, pos[2]]} args={[0.1, 8, 8]}>
+          <mesh position={[pos[0], 0, pos[2]]}>
+            <sphereGeometry args={[0.1, 8, 8]} />
             <meshStandardMaterial 
               color={`hsl(${120 * fitness[i]}, 70%, 60%)`}
               emissive={`hsl(${120 * fitness[i]}, 70%, 30%)`}
               emissiveIntensity={0.3}
             />
-          </Sphere>
+          </mesh>
           <mesh position={[pos[0], fitness[i], pos[2]]}>
             <boxGeometry args={[0.1, fitness[i] * 2, 0.1]} />
             <meshStandardMaterial 
@@ -108,36 +110,48 @@ const CrossoverVisualization = () => {
   return (
     <group>
       {/* Parents */}
-      <Sphere position={parent1Pos} args={[0.15, 8, 8]}>
+      <mesh position={parent1Pos}>
+        <sphereGeometry args={[0.15, 8, 8]} />
         <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.2} />
-      </Sphere>
-      <Sphere position={parent2Pos} args={[0.15, 8, 8]}>
+      </mesh>
+      <mesh position={parent2Pos}>
+        <sphereGeometry args={[0.15, 8, 8]} />
         <meshStandardMaterial color="#06b6d4" emissive="#06b6d4" emissiveIntensity={0.2} />
-      </Sphere>
+      </mesh>
       
       {/* Children */}
-      <Sphere position={child1Pos} args={[0.15, 8, 8]}>
+      <mesh position={child1Pos}>
+        <sphereGeometry args={[0.15, 8, 8]} />
         <meshStandardMaterial color="#ec4899" emissive="#ec4899" emissiveIntensity={0.2} />
-      </Sphere>
-      <Sphere position={child2Pos} args={[0.15, 8, 8]}>
+      </mesh>
+      <mesh position={child2Pos}>
+        <sphereGeometry args={[0.15, 8, 8]} />
         <meshStandardMaterial color="#10b981" emissive="#10b981" emissiveIntensity={0.2} />
-      </Sphere>
+      </mesh>
       
       {/* Connection lines */}
-      <Line
-        points={[new THREE.Vector3(...parent1Pos), new THREE.Vector3(...child1Pos)]}
-        color="#8b5cf6"
-        lineWidth={2}
-        transparent
-        opacity={0.6}
-      />
-      <Line
-        points={[new THREE.Vector3(...parent2Pos), new THREE.Vector3(...child2Pos)]}
-        color="#06b6d4"
-        lineWidth={2}
-        transparent
-        opacity={0.6}
-      />
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array([...parent1Pos, ...child1Pos])}
+            count={2}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
+      </line>
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array([...parent2Pos, ...child2Pos])}
+            count={2}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#06b6d4" transparent opacity={0.6} />
+      </line>
       
       <Text
         position={[0, -1.2, 0]}
@@ -157,48 +171,68 @@ const NetworkVisualization = () => {
   return (
     <group>
       {/* Simple network structure */}
-      <Sphere position={[-1, 0, 0]} args={[0.1, 8, 8]}>
+      <mesh position={[-1, 0, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
         <meshStandardMaterial color="#06b6d4" emissive="#06b6d4" emissiveIntensity={0.2} />
-      </Sphere>
-      <Sphere position={[0, 0.5, 0]} args={[0.1, 8, 8]}>
+      </mesh>
+      <mesh position={[0, 0.5, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
         <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.2} />
-      </Sphere>
-      <Sphere position={[0, -0.5, 0]} args={[0.1, 8, 8]}>
+      </mesh>
+      <mesh position={[0, -0.5, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
         <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.2} />
-      </Sphere>
-      <Sphere position={[1, 0, 0]} args={[0.1, 8, 8]}>
+      </mesh>
+      <mesh position={[1, 0, 0]}>
+        <sphereGeometry args={[0.1, 8, 8]} />
         <meshStandardMaterial color="#ec4899" emissive="#ec4899" emissiveIntensity={0.2} />
-      </Sphere>
+      </mesh>
       
       {/* Connections */}
-      <Line
-        points={[new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 0.5, 0)]}
-        color="#06b6d4"
-        lineWidth={2}
-        transparent
-        opacity={0.6}
-      />
-      <Line
-        points={[new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, -0.5, 0)]}
-        color="#06b6d4"
-        lineWidth={2}
-        transparent
-        opacity={0.6}
-      />
-      <Line
-        points={[new THREE.Vector3(0, 0.5, 0), new THREE.Vector3(1, 0, 0)]}
-        color="#8b5cf6"
-        lineWidth={2}
-        transparent
-        opacity={0.6}
-      />
-      <Line
-        points={[new THREE.Vector3(0, -0.5, 0), new THREE.Vector3(1, 0, 0)]}
-        color="#8b5cf6"
-        lineWidth={2}
-        transparent
-        opacity={0.6}
-      />
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array([-1, 0, 0, 0, 0.5, 0])}
+            count={2}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#06b6d4" transparent opacity={0.6} />
+      </line>
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array([-1, 0, 0, 0, -0.5, 0])}
+            count={2}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#06b6d4" transparent opacity={0.6} />
+      </line>
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array([0, 0.5, 0, 1, 0, 0])}
+            count={2}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
+      </line>
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array([0, -0.5, 0, 1, 0, 0])}
+            count={2}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#8b5cf6" transparent opacity={0.6} />
+      </line>
     </group>
   );
 };

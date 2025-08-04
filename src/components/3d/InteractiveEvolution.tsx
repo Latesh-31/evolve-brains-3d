@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Sphere, Line, Text } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
@@ -36,11 +36,11 @@ const Population = ({ individuals, generation }: { individuals: Individual[]; ge
   return (
     <group ref={groupRef}>
       {individuals.map((individual, i) => (
-        <Sphere 
+        <mesh 
           key={i} 
-          position={individual.position} 
-          args={[0.1 * individual.scale, 8, 8]}
+          position={individual.position}
         >
+          <sphereGeometry args={[0.1 * individual.scale, 8, 8]} />
           <meshStandardMaterial 
             color={individual.color}
             emissive={individual.color}
@@ -48,7 +48,7 @@ const Population = ({ individuals, generation }: { individuals: Individual[]; ge
             transparent
             opacity={0.8}
           />
-        </Sphere>
+        </mesh>
       ))}
       
       <Text

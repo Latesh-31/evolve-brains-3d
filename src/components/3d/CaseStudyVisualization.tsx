@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Box, Sphere, Line, Text } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
@@ -33,19 +33,22 @@ const FlappyBirdSim = ({ isPlaying }: { isPlaying: boolean }) => {
   return (
     <group>
       {/* Bird */}
-      <Sphere ref={birdRef} position={[-2, birdY, 0]} args={[0.2, 8, 8]}>
+      <mesh position={[-2, birdY, 0]}>
+        <sphereGeometry args={[0.2, 8, 8]} />
         <meshStandardMaterial color="#f59e0b" emissive="#f59e0b" emissiveIntensity={0.2} />
-      </Sphere>
+      </mesh>
       
       {/* Pipes */}
       {pipes.map((pipe, i) => (
         <group key={i}>
-          <Box position={[pipe.x, pipe.gapY + 1.5, 0]} args={[0.3, 2, 0.3]}>
+          <mesh position={[pipe.x, pipe.gapY + 1.5, 0]}>
+            <boxGeometry args={[0.3, 2, 0.3]} />
             <meshStandardMaterial color="#22c55e" />
-          </Box>
-          <Box position={[pipe.x, pipe.gapY - 1.5, 0]} args={[0.3, 2, 0.3]}>
+          </mesh>
+          <mesh position={[pipe.x, pipe.gapY - 1.5, 0]}>
+            <boxGeometry args={[0.3, 2, 0.3]} />
             <meshStandardMaterial color="#22c55e" />
-          </Box>
+          </mesh>
         </group>
       ))}
       
@@ -90,15 +93,17 @@ const CarRacingSim = ({ isPlaying }: { isPlaying: boolean }) => {
     <group>
       {/* Track */}
       {trackPoints.map((point, i) => (
-        <Box key={i} position={point as [number, number, number]} args={[0.1, 0.05, 0.1]}>
+        <mesh key={i} position={point as [number, number, number]}>
+          <boxGeometry args={[0.1, 0.05, 0.1]} />
           <meshStandardMaterial color="#71717a" />
-        </Box>
+        </mesh>
       ))}
       
       {/* Car */}
-      <Box ref={carRef} position={[2, 0.1, 0]} args={[0.4, 0.2, 0.2]}>
+      <mesh ref={carRef} position={[2, 0.1, 0]}>
+        <boxGeometry args={[0.4, 0.2, 0.2]} />
         <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.2} />
-      </Box>
+      </mesh>
       
       <Text
         position={[0, -1.5, 0]}
@@ -143,23 +148,25 @@ const PoleBalancingSim = ({ isPlaying }: { isPlaying: boolean }) => {
   return (
     <group>
       {/* Track */}
-      <Box position={[0, -0.5, 0]} args={[6, 0.1, 0.2]}>
+      <mesh position={[0, -0.5, 0]}>
+        <boxGeometry args={[6, 0.1, 0.2]} />
         <meshStandardMaterial color="#71717a" />
-      </Box>
+      </mesh>
       
       {/* Cart */}
-      <Box ref={cartRef} position={[cartX, -0.3, 0]} args={[0.4, 0.3, 0.3]}>
+      <mesh ref={cartRef} position={[cartX, -0.3, 0]}>
+        <boxGeometry args={[0.4, 0.3, 0.3]} />
         <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={0.2} />
-      </Box>
+      </mesh>
       
       {/* Pole */}
-      <Box 
+      <mesh 
         ref={poleRef} 
-        position={[cartX, 0.5, 0]} 
-        args={[0.05, 1.5, 0.05]}
+        position={[cartX, 0.5, 0]}
       >
+        <boxGeometry args={[0.05, 1.5, 0.05]} />
         <meshStandardMaterial color="#f59e0b" />
-      </Box>
+      </mesh>
       
       <Text
         position={[0, -1.2, 0]}
